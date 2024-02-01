@@ -45,11 +45,3 @@ while i<len(veri_cercevesi[sutun_adi1]):
 benzersizElemanlar=set(aynıDegerDizesi)
 print("Aynı Deger Dizesi",benzersizElemanlar," Adedi : ",len(benzersizElemanlar))
 print("İki sütunun birebir aynı değere sahip satırlarının adedi : ",bireBirAyniDeger) 
-
-
-# i=1
-# ayniDeger=0
-# while i<len(veri_cercevesi[sutun_adi1]):
-#     if veri_cercevesi[sutun_adi1].index[i]==veri_cercevesi[sutun_adi2].index[i]:
-#         ayniDeger=ayniDeger+1
-#     i=i+1
