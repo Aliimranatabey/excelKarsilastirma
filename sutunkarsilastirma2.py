@@ -7,6 +7,7 @@ sheet1 = dosya1.active
 dosya2 = op.load_workbook('5Ghz_Kapali_Cihaz_Listesi_1.xlsx')
 sheet2 = dosya2.active
 
+
 # Yeni Excel dosyası oluştur
 output = op.Workbook()
 outputSheet = output.active
@@ -22,25 +23,25 @@ for col, title in zip(columns, column_titles):
     outputSheet.column_dimensions[col].width = max(sheet1.column_dimensions[col].width, len(title)) + 15
 
 # MAC1 ve MAC2 verilerini A ve B sütunlarına yazma
-for index, value in enumerate(sheet1['G'], start=2):
-    if value=='MAC':
-        continue
-    outputSheet.cell(row=index-1, column=1, value=value.value)
-for index, value in enumerate(sheet2['G'], start=2):
-    if value=='MAC':
-        continue
-    outputSheet.cell(row=index-1, column=2, value=value.value)
+mac1_values = [value.value for value in sheet1['G'][1:]]
+mac2_values = [value.value for value in sheet2['G'][1:]]
 
-# Eşleşme başlığını ve eşleşen değerleri bulma
-compare_set = set([cell.value for cell in outputSheet['A']])
-compare_set.intersection_update([cell.value for cell in outputSheet['B']])
-compare_set.remove('MAC')
-for index, value in enumerate(compare_set, start=1):
+# A sütununa MAC1 verilerini yazma
+for index, value in enumerate(mac1_values, start=2):
+    outputSheet['A' + str(index)].value = value
+
+# B sütununa MAC2 verilerini yazma
+for index, value in enumerate(mac2_values, start=2):
+    outputSheet['B' + str(index)].value = value
+
+# Eşleşen başlıkları ve değerleri bulma
+common_mac_values = set(filter(None, mac1_values)).intersection(filter(None, mac2_values))
+for index, value in enumerate(common_mac_values, start=1):
     outputSheet.cell(row=index + 1, column=3, value=value)
-    mac1_row = [i for i, cell in enumerate(outputSheet['A'], start=1) if cell.value == value]
-    mac2_row = [i for i, cell in enumerate(outputSheet['B'], start=1) if cell.value == value]
-    outputSheet.cell(row=index + 1, column=4, value=mac1_row[0] if mac1_row else None)
-    outputSheet.cell(row=index + 1, column=5, value=mac2_row[0] if mac2_row else None)
-    
+    mac1_row = mac1_values.index(value) + 2
+    mac2_row = mac2_values.index(value) + 2
+    outputSheet.cell(row=index + 1, column=4, value=mac1_row)
+    outputSheet.cell(row=index + 1, column=5, value=mac2_row)
+
 # Dosyayı kaydet
 output.save('tryExcel1.xlsx')
